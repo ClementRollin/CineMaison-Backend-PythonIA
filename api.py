@@ -1,22 +1,22 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from model import Recommender
 
 app = FastAPI()
 
-# Load and prepare the model
-recommender = Recommender('ratings.csv')
-recommender.preprocess_data()
-recommender.train_model()
-
 class RecommendationRequest(BaseModel):
-    user_id: int
-    top_n: int = 10
+    mood: str
+    day: str
+    genre: str
+    duration: str
 
-@app.post("/recommendations")
+@app.post("/recommend")
 async def get_recommendations(request: RecommendationRequest):
     try:
-        recommendations = recommender.recommend(request.user_id, request.top_n)
-        return {"user_id": request.user_id, "recommendations": recommendations}
+        recommendations = generate_recommendations(request.mood, request.day, request.genre, request.duration)
+        return {"recommendations": recommendations}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+def generate_recommendations(mood, day, genre, duration):
+    # This function will be implemented in the next step
+    return ["Movie 1", "Movie 2", "Movie 3"]
